@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Drawing</title>
+    <style>
+        /* Remove default margins and padding */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        canvas {
+            border: 1px solid black;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="text" id="wordInput" placeholder="Enter mystical words separated by spaces...">
+    <button onclick="addWords()">Add Words</button>
+    <canvas id="myCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        const fonts = ["Arial", "Verdana", "Times New Roman", "Georgia", "Courier New"];
+
+        // Resize the canvas to full page
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        // Call it initially and whenever the window resizes
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        let mysticalWords = ["Trippy", "Mind", "Intense", "Loop", "Abre Los Ojos"];
+
+        function addWords() {
+            const inputWords = document.getElementById('wordInput').value.split(' ');
+            mysticalWords = mysticalWords.concat(inputWords);
+        }
+
+        function drawEye(x, y) {
+            ctx.beginPath();
+            ctx.arc(x, y, 30, 0, Math.PI * 2); // Outer circle
+            ctx.moveTo(x + 10, y);
+            ctx.arc(x, y, 10, 0, Math.PI * 2); // Inner circle
+            ctx.stroke();
+        }
+
+        function drawInfinitySymbol(x, y, angle) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+            ctx.beginPath();
+            ctx.arc(0, 0, 25, 0, Math.PI * 2, true);
+            ctx.arc(50, 0, 25, 0, Math.PI * 2, true);
+            ctx.moveTo(25, -25);
+            ctx.lineTo(25, 25);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawRandomScribble() {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + (Math.random() * 40 - 20), y + (Math.random() * 40 - 20));
+            ctx.stroke();
+        }
+
+        function drawRandom() {
+            const randomNumber = Math.floor(Math.random() * 5);
+
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height;
+            const angle = Math.random() * 2 * Math.PI;
+            const fontSize = Math.floor(Math.random() * 20) + 20;
+            const font = fonts[Math.floor(Math.random() * fonts.length)];
+
+            ctx.font = fontSize + "px " + font;
+
+            switch (randomNumber) {
+                case 0:
+                    drawInfinitySymbol(x, y, angle);
+                    break;
+                case 1:
+                    drawEye(x, y);
+                    break;
+                case 2:
+                    ctx.save();
+                    ctx.translate(x, y);
+                    ctx.rotate(angle);
+                    ctx.fillText(mysticalWords[Math.floor(Math.random() * mysticalWords.length)], 0, 0);
+                    ctx.restore();
+                    break;
+                default:
+                    drawRandomScribble();
+                    break;
+            }
+
+            setTimeout(drawRandom, 50);
+        }
+
+        drawRandom();
+    </script>
+</body>
+
+</html>
